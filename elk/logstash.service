@@ -1,0 +1,16 @@
+[Unit]
+Description=logstash
+After=docker.service
+Requires=docker.service
+#Requires=elasticsearch.service
+
+[Service]
+TimeoutStartSec=0
+ExecStartPre=-/usr/bin/docker kill logstash
+ExecStartPre=-/usr/bin/docker rm logstash
+ExecStartPre=-/usr/bin/docker pull flecno/logstash
+ExecStart=/usr/bin/docker run --rm --name logstash --link elasticsearch:elasticsearch flecno/logstash:1.4.2
+ExecStop=/usr/bin/docker stop logstash
+
+[X-Fleet]
+X-Conflicts=logstash.service
